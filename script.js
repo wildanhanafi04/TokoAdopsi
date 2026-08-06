@@ -1,8 +1,50 @@
+const API_URL = "https://symmetrical-couscous-5gwj99rjv59p39xq-3000.app.github.dev/api/products";
+ 
+// Fungsi untuk menampilkan satu produk sebagai kartu HTML
+function buatKartuProduk(item) {
+  const kartu = document.createElement("div");
+  kartu.className = "bg-white rounded-xl shadow hover:shadow-lg transition p-4";
+  kartu.innerHTML = `
+    <div class="w-full h-40 bg-gray-100 rounded-lg mb-3 flex items-center
+                justify-center text-gray-400 text-sm">Belum ada gambar</div>
+    <h4 class="font-semibold text-gray-800">${item.nama}</h4>
+    <p class="text-blue-700 font-bold mt-1">Rp ${item.harga.toLocaleString("id-ID")}</p>
+    <button class="w-full mt-3 bg-blue-700 text-white py-2 rounded-lg text-sm
+                   btn-tambah-keranjang">Tambah ke Keranjang</button>
+  `;
+  return kartu;
+}
+
+const gridKatalog = document.getElementById("grid-katalog");
+const formProduk = document.getElementById("form-produk");
+
+async function muatProduk() {
+  gridKatalog.innerHTML = `<p>Memuat produk...</p>`;
+
+  try {
+    const response = await fetch(API_URL);
+    const hasil = await response.json();
+
+    gridKatalog.innerHTML = "";
+
+    // kalau backend mengembalikan { data: [...] }
+    hasil.data.forEach((item) => {
+      gridKatalog.appendChild(buatKartuProduk(item));
+    });
+
+  } catch (error) {
+    console.error(error);
+    gridKatalog.innerHTML = `<p>Gagal memuat produk</p>`;
+  }
+}
+
+muatProduk();
+
 // let digunakan untuk nilai ynag bisa berubah
 let jumlahKeranjang = 0;
 
 // const digunakan untuk nilai yang tetap (tidak berubah)
-const namaToko = "TokoAdopt";
+const namaToko = "TokoHoki";
 
 // Template literal: cara moedrn menggabungkan teks dan variabel 
 console.log(`Selamat datang di ${namaToko}!`);
@@ -34,40 +76,31 @@ tombolHamburger.addEventListener("click",()=>{
     menuMobile.classList.toggle("hidden");
 });
 
-const formProduk = document.querySelector("#form-produk");
-// beri id "grid-katalog" pada <div grid> di Catalog UI
-const gridKatalog = document.querySelector("#grid-katalog");
+
 const pesanError = document.querySelector("#pesan-error");
 
-formProduk.addEventListener("submit", (event) => {
-    event.preventDefault(); // mencegah form me-reload halaman
+formProduk.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
-    const nama = document.querySelector("#input-nama").value.trim();
-    const harga = document.querySelector("#input-harga").value;
+  const nama = document.querySelector("#input-nama").value.trim();
+  const harga = Number(document.querySelector("#input-harga").value);
 
-    // validasi sederhana
-    if (nama === "" || harga === "" || Number(harga) <= 0) {
-        pesanError.textContent = "Nama produk dan harga (lebih dari 0) wajib diisi.";
-        pesanError.classList.remove("hidden");
-        return; // hentikan proses jika tidak valid
-    }
+  if (nama === "" || harga <= 0) {
+    pesanError.textContent = "Nama produk dan harga (lebih dari 0) wajib diisi.";
+    pesanError.classList.remove("hidden");
+    return;
+  }
 
-    pesanError.classList.add("hidden");
+  pesanError.classList.add("hidden");
 
-    // Membuat elemen kartu produk baru secara dinamis
-    const kartuBaru = document.createElement("div");
-    kartuBaru.className = "bg-white rounded-xl shadow hover:shadow-lg transition p-4";
+  await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nama, harga }),
+  });
 
-    kartuBaru.innerHTML =`
-        <div class="w-full h-40 bg-gray-100 rounded-lg mb-3 flex items-center 
-        justifyify-center text-gray-400 text-sm">Belum ada gambar</div>
-        <h4 class="font-semibold text-gray-800">${nama}</h4>
-        <p class="text-blue-700 font-bold mt-1">Rp ${Number(harga).toLocaleString("id-ID")}</p>
-        <div class="w-full mt-3 bg-blue-700 text-white py-2 rounded-lg text-sm
-                    btn-tambah-keranjang">Tambah ke Keranjang</button>
-            `;
-            gridKatalog.appendChild(kartuBaru);
-            formProduk.reset(); // mengosongkan form setelah berhasil
+  formProduk.reset();
+  muatProduk();
 });
 
 let totalKeranjang = 0;

@@ -1,16 +1,19 @@
 // Mengimpor library express yang sudah diinstal
 const express = require("express");
+const cors = require("cors");
+const db = require("./db"); // mengimpor koneksi database
 
 // Membuat instance aplikasi Express
 const app = express();
 const PORT = 3000;
 
+app.use(cors());          // mengizinkan request dari origin lain
 // Middleware bawaan agar Express bisa membaca JSON dari request
 app.use(express.json());
 
 // Route paling dasar, hanya untuk mengecek server hidup
 app.get("/", (req, res) => {
-    res.send("Selamat datang di API TokoAdopt!");
+  res.send("Selamat datang di API TokoAdopt!");
 });
 
 // Menjalankan server dan mendengarkan di PORT yang ditentukan
@@ -19,105 +22,89 @@ app.listen(PORT, () => {
 });
 
 app.get("/api/ping", (req, res) => {
-    // res.json() otomatis mengubah objek JavaScript menjadi format JSON
-    res.json({
-        status: "success",
-        message: "pong",
-        waktuserver: new Date().toLocaleDateString(),
-    });
+  // res.json() otomatis mengubah objek JavaScript menjadi format JSON
+  res.json({
+    status: "success",
+    message: "pong",
+    waktuServer: new Date().toISOString(),
+  });
 });
 
-//Data sementara di memori (akan diganti database sungguhan di hari 4)
-let produk = [
-    { id: 1, nama: "Abdul", harga: 90000},
-    { id: 2, nama: "Asep", harga: 100000},
-    { id: 3, nama: "Ironi", harga: 140000},
-    { id: 4, nama: "Paul", harga: 90000},
-    { id: 5, nama: "Rizki", harga: 130000},
-    { id: 6, nama: "Rusdi", harga: 110000},
-    { id: 7, nama: "Saiful", harga: 145000},
-    { id: 8, nama: "Ucup", harga: 90000},
-];
+// Variabel penghitung id agar produk baru selalu punya id unik
+let idBerikutnya = 4;
 
-//Variabel penghitung id agar produk baru selalu punya id unik
-let idBerikut = 4;
 
-// GET/api/products -. mengambil semua produk
+// GET /api/products -> mengambil semua produk
 app.get("/api/products", (req, res) => {
-    res.json({ status: "success", data: produk });
+  const data = db.prepare("SELECT * FROM produk").all();
+  res.json({ status: "success", data });
 });
 
-// GET /api/products/search?nama=... -> mencari produk berdasarkan nama
+// GET /api/products/search?nama={nama_product} -> mencari produk berdasarkan nama
 app.get("/api/products/search", (req, res) => {
-    const nama = req.query.nama || "";
-    const keyword = nama.toLowerCase();
-    const hasil = produk.filter((p) => p.nama.toLowerCase().includes(keyword));
+  const namaQuery = req.query.nama;
 
-    res.json({ status: "success", data: hasil });
+  if (!namaQuery) {
+    return res.status(400).json({ status: "error", message: "Query parameter 'nama' wajib diisi" });
+  }
+
+  const hasil = produk.filter((p) =>
+    p.nama.toLowerCase().includes(String(namaQuery).toLowerCase())
+  );
+
+  res.json({ status: "success", data: hasil });
 });
 
-// GET /api/products/:id -> mengambil satu produk bers=dasarka nid
+// GET /api/products/:id -> mengambil satu produk berdasarkan id
 app.get("/api/products/:id", (req, res) => {
-    const id = Number(req.params.id);
-    const item = produk.find((p) => p.id === id);
+  const id = Number(req.params.id);
+  const item = db.prepare("SELECT * FROM produk WHERE id = ?").get(id);
 
-    if (!item) {
-        return res.status(404).json({ status: "error", message: "Produk tidak ditemukan" });
-    }
-    res.json({ status: "success", data: item });
+  if (!item) {
+    return res.status(404).json({ status: "error", message: "Produk tidak ditemukan" });
+  }
+  res.json({ status: "success", data: item });
 });
 
-// poST /api/products -> menambah produk baru
+// POST /api/products -> menambah produk baru
 app.post("/api/products", (req, res) => {
-    const { nama, harga } = req.body;
-    
-    //Validasi sederhana di sisi backend
-    if (!nama || !harga || harga <= 0) {
-        return res.status(400).json({
-            status: "error",
-            message: "Nama dan harga (lebih dari 0) wajid diisi",
-        });
-    }
+  const { nama, harga } = req.body;
+  if (!nama || !harga || harga <= 0) {
+    return res.status(400).json({ status: "error", message: "Nama dan harga wajib diisi" });
+  }
 
-    const produkBaru = { id: idBerikut++, nama, harga };
-    produk.push(produkBaru);
+  const hasil = db
+    .prepare("INSERT INTO produk (nama, harga) VALUES (?, ?)")
+    .run(nama, harga);
 
-    res.status(201).json({ status: "success", data: produkBaru });
+  const produkBaru = { id: hasil.lastInsertRowid, nama, harga };
+  res.status(201).json({ status: "success", data: produkBaru });
+
 });
 
-// PUT /api/products/:id -> memperbarui produkj berdasarkan id
-app.put("/api/products/id", (req, res) => {
-    const id = Number(req.params.id);
-    const { nama, harga } = req.body;
+// PUT /api/products/:id -> memperbarui produk berdasarkan id
+app.put("/api/products/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const { nama, harga } = req.body;
 
-    const item = produk.find((p) => p.id === id);
-    if (!item) {
-        return res.status(404).json({ status: "error", message: "Produk tidak ditemukan" });
-    }
+  const hasil = db
+    .prepare("UPDATE produk SET nama = ?, harga = ? WHERE id = ?")
+    .run(nama, harga, id);
 
-    if (!nama || !harga || harga <= 0) {
-        return res.status(400).json({
-            status: "error",
-            message: "Nama dan Harga (Lebih dari 0) wajid diisi",
-        });
-    }
+  if (hasil.changes === 0) {
+    return res.status(404).json({ status: "error", message: "Produk tidak ditemukan" });
+  }
+  res.json({ status: "success", data: { id, nama, harga } });
 
-    item.nama = nama;
-    item.harga = harga;
-    
-    res.json({ status: "success", data: item });
 });
-
 
 // DELETE /api/products/:id -> menghapus produk berdasarkan id
 app.delete("/api/products/:id", (req, res) => {
-    const id = Number(req.params.id);
-    const adaProduk = produk.some((p) => p.id === id);
+  const id = Number(req.params.id);
+  const hasil = db.prepare("DELETE FROM produk WHERE id = ?").run(id);
 
-    if (!adaProduk) {
-        return res.status(404).json({ status: "error", message: "Produk tidak ditemukan" });
-    }
-
-    produk = produk.filter((p) => p.id !== id);
-    res.json({ status: "success", message: `Produk id ${id} berhasil dihapus `});
+  if (hasil.changes === 0) {
+    return res.status(404).json({ status: "error", message: "Produk tidak ditemukan" });
+  }
+  res.json({ status: "success", message: `Produk id ${id} berhasil dihapus` });
 });
