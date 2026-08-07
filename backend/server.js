@@ -68,16 +68,37 @@ app.get("/api/products/:id", (req, res) => {
 
 // POST /api/products -> menambah produk baru
 app.post("/api/products", (req, res) => {
-  const { nama, harga } = req.body;
+  const { nama, harga, gambar, detail, kategori, size, stok, diskon } = req.body;
   if (!nama || !harga || harga <= 0) {
     return res.status(400).json({ status: "error", message: "Nama dan harga wajib diisi" });
   }
 
   const hasil = db
-    .prepare("INSERT INTO produk (nama, harga) VALUES (?, ?)")
-    .run(nama, harga);
+    .prepare(
+      "INSERT INTO produk (nama, harga, gambar, detail, kategori, size, stok, diskon) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    )
+    .run(
+      nama,
+      Number(harga),
+      gambar || null,
+      detail || null,
+      kategori || null,
+      size || null,
+      stok || null,
+      Number(diskon || 0)
+    );
 
-  const produkBaru = { id: hasil.lastInsertRowid, nama, harga };
+  const produkBaru = {
+    id: hasil.lastInsertRowid,
+    nama,
+    harga: Number(harga),
+    gambar: gambar || null,
+    detail: detail || null,
+    kategori: kategori || null,
+    size: size || null,
+    stok: stok || null,
+    diskon: Number(diskon || 0),
+  };
   res.status(201).json({ status: "success", data: produkBaru });
 
 });
@@ -85,16 +106,28 @@ app.post("/api/products", (req, res) => {
 // PUT /api/products/:id -> memperbarui produk berdasarkan id
 app.put("/api/products/:id", (req, res) => {
   const id = Number(req.params.id);
-  const { nama, harga } = req.body;
+  const { nama, harga, gambar, detail, kategori, size, stok, diskon } = req.body;
 
   const hasil = db
-    .prepare("UPDATE produk SET nama = ?, harga = ? WHERE id = ?")
-    .run(nama, harga, id);
+    .prepare(
+      "UPDATE produk SET nama = ?, harga = ?, gambar = ?, detail = ?, kategori = ?, size = ?, stok = ?, diskon = ? WHERE id = ?"
+    )
+    .run(
+      nama,
+      Number(harga),
+      gambar || null,
+      detail || null,
+      kategori || null,
+      size || null,
+      stok || null,
+      Number(diskon || 0),
+      id
+    );
 
   if (hasil.changes === 0) {
     return res.status(404).json({ status: "error", message: "Produk tidak ditemukan" });
   }
-  res.json({ status: "success", data: { id, nama, harga } });
+  res.json({ status: "success", data: { id, nama, harga, gambar, detail, kategori, size, stok, diskon } });
 
 });
 

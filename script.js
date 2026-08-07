@@ -61,6 +61,46 @@ const produkDefault = [
     stok: "Stok ready",
     gambar: "assets/images/baju ronaldo.webp",
   },
+  {
+    nama: "Sepatu Futsal Lite",
+    harga: 650000,
+    kategori: "Sepatu",
+    detail: "Sepatu ringan dan nyaman untuk futsal dan latihan cepat.",
+    diskon: 20,
+    size: "39-44",
+    stok: "Stok ready",
+    gambar: "assets/images/Sepatu cr7.jpg.jpeg",
+  },
+  {
+    nama: "Jersey Timnas Home",
+    harga: 450000,
+    kategori: "Jersey",
+    detail: "Jersey premium dengan desain sporty dan cocok untuk pertandingan.",
+    diskon: 15,
+    size: "S-XL",
+    stok: "Stok ready",
+    gambar: "assets/images/baju ronaldo.webp",
+  },
+  {
+    nama: "Bola Training Pro",
+    harga: 280000,
+    kategori: "Bola",
+    detail: "Bola latihan tahan lama dengan grip stabil untuk sesi rutin.",
+    diskon: 10,
+    size: "Size 4",
+    stok: "Stok terbatas",
+    gambar: "assets/images/Bola Adidas.webp",
+  },
+  {
+    nama: "Pelindung Lutut Sport",
+    harga: 180000,
+    kategori: "Proteksi",
+    detail: "Pelindung nyaman untuk latihan fisik dan sesi pemulihan.",
+    diskon: 5,
+    size: "M-L",
+    stok: "Stok ready",
+    gambar: "assets/images/sarung tangan.jpg.jpeg",
+  },
 ];
 
 function pilihGambarProduk(nama) {
@@ -99,6 +139,15 @@ function formatRupiah(nilai) {
     currency: "IDR",
     maximumFractionDigits: 0,
   }).format(nilai);
+}
+
+function hitungHargaDiskon(harga, diskon) {
+  const hargaAsli = Number(harga || 0);
+  const persen = Number(diskon || 0);
+  if (persen <= 0) {
+    return hargaAsli;
+  }
+  return Math.round(hargaAsli * (100 - persen) / 100);
 }
 
 let keranjang = [];
@@ -143,9 +192,9 @@ function renderKeranjang() {
     "beforeend",
     `
       <div class="mt-4 border-t border-slate-200 pt-4">
-        <button id="btn-checkout" class="w-full rounded-xl bg-[#7CFF5B] px-3 py-2 text-sm font-semibold text-[#0f172a] transition hover:bg-[#6ee84f]">
+        <a href="checkout.html" id="btn-checkout" class="block w-full rounded-xl bg-[#7CFF5B] px-3 py-2 text-center text-sm font-semibold text-[#0f172a] transition hover:bg-[#6ee84f]">
           Checkout
-        </button>
+        </a>
       </div>
     `
   );
@@ -167,13 +216,14 @@ function buatKartuProduk(item) {
   const kartu = document.createElement("div");
   kartu.className = "football-card rounded-[24px] border border-slate-200 p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg";
   kartu.dataset.nama = item.nama;
-  kartu.dataset.harga = Number(item.harga || 0);
-  kartu.dataset.gambar = item.gambar || pilihGambarProduk(item.nama);
-
   const harga = Number(item.harga || 0);
   const diskon = Number(item.diskon || 0);
+  const hargaDiskon = hitungHargaDiskon(harga, diskon);
+  kartu.dataset.harga = hargaDiskon;
+  kartu.dataset.gambar = item.gambar || pilihGambarProduk(item.nama);
+
   const badge = diskon > 0 ? `Diskon ${diskon}%` : "Best Seller";
-  const gambar = item.gambar || pilihGambarProduk(item.nama);
+  const gambar = String(item.gambar || "").trim();
   const gambarFinal = gambar || pilihGambarProduk(item.nama);
   const detail = item.detail || "Produk pilihan yang siap dipakai saat latihan atau matchday.";
   const kategori = item.kategori || "Perlengkapan";
@@ -201,7 +251,10 @@ function buatKartuProduk(item) {
       </div>
 
       <div class="mt-3 flex items-center justify-between">
-        <p class="text-lg font-black text-[#ff3b30]">Rp ${harga.toLocaleString("id-ID")}</p>
+        <div>
+          ${diskon > 0 ? `<p class="text-sm text-slate-500 line-through">Rp ${harga.toLocaleString("id-ID")}</p>` : ""}
+          <p class="text-lg font-black text-[#ff3b30]">Rp ${hargaDiskon.toLocaleString("id-ID")}</p>
+        </div>
         <span class="text-xs font-semibold text-slate-500">${size}</span>
       </div>
 
@@ -211,19 +264,128 @@ function buatKartuProduk(item) {
     </div>
   `;
 
+  const gambarElement = kartu.querySelector("img");
+  if (gambarElement) {
+    gambarElement.addEventListener("error", () => {
+      gambarElement.src = pilihGambarProduk(item.nama);
+    });
+  }
+
   return kartu;
+}
+
+function normalisasiProduk(item) {
+  const nama = String(item?.nama || "").trim();
+  const dataProduk = {
+    "nike mercurial cr7": {
+      kategori: "Sepatu",
+      detail: "Sepatu sepak bola premium dengan sole responsif untuk sprint dan kontrol bola yang lebih presisi.",
+      diskon: 90,
+      size: "UK 39-44",
+      stok: "Stok ready",
+      gambar: "assets/images/Sepatu cr7.jpg.jpeg",
+    },
+    "kaos kaki": {
+      kategori: "Aksesoris",
+      detail: "Kaos kaki olahraga berbahan lembut dan anti slip untuk kenyamanan saat latihan maupun pertandingan.",
+      diskon: 15,
+      size: "S-M-L",
+      stok: "Stok ready",
+      gambar: "assets/images/kaos kaki adidas.jpg.jpeg",
+    },
+    "deker": {
+      kategori: "Bola",
+      detail: "Deker bola ringan untuk latihan kontrol dan teknik dasar dengan permukaan yang nyaman.",
+      diskon: 0,
+      size: "Size 4",
+      stok: "Stok terbatas",
+      gambar: "assets/images/deker bola.jpg.jpeg",
+    },
+    "sarung tangan kiper": {
+      kategori: "Proteksi",
+      detail: "Sarung tangan kiper dengan pegangan kuat dan perlindungan maksimal saat menyelamatkan tembakan.",
+      diskon: 10,
+      size: "M-L",
+      stok: "Stok ready",
+      gambar: "assets/images/sarung tangan.jpg.jpeg",
+    },
+    "baju bekas ronaldo": {
+      kategori: "Jersey",
+      detail: "Jersey premium dengan material breathable dan desain modern yang cocok untuk tampil percaya diri.",
+      diskon: 20,
+      size: "S-XL",
+      stok: "Stok ready",
+      gambar: "assets/images/baju ronaldo.webp",
+    },
+    "bola adidas": {
+      kategori: "Bola",
+      detail: "Bola resmi berkualitas tinggi dengan grip stabil dan desain premium untuk latihan maupun matchday.",
+      diskon: 12,
+      size: "Size 5",
+      stok: "Stok ready",
+      gambar: "assets/images/Bola Adidas.webp",
+    },
+    "sepatu futsal lite": {
+      kategori: "Sepatu",
+      detail: "Sepatu futsal ringan dengan desain fleksibel dan kenyamanan maksimal untuk gerakan cepat.",
+      diskon: 20,
+      size: "39-44",
+      stok: "Stok ready",
+      gambar: "assets/images/Sepatu cr7.jpg.jpeg",
+    },
+    "jersey timnas home": {
+      kategori: "Jersey",
+      detail: "Jersey timnas dengan material breathable dan warna khas untuk tampil sporty di lapangan.",
+      diskon: 15,
+      size: "S-XL",
+      stok: "Stok ready",
+      gambar: "assets/images/baju ronaldo.webp",
+    },
+    "bola training pro": {
+      kategori: "Bola",
+      detail: "Bola latihan tahan lama dengan grip stabil dan cocok untuk sesi rutin maupun pemanasan.",
+      diskon: 10,
+      size: "Size 4",
+      stok: "Stok terbatas",
+      gambar: "assets/images/Bola Adidas.webp",
+    },
+    "pelindung lutut sport": {
+      kategori: "Proteksi",
+      detail: "Pelindung lutut yang nyaman dipakai untuk latihan fisik dan perlindungan saat aktivitas olahraga.",
+      diskon: 5,
+      size: "M-L",
+      stok: "Stok ready",
+      gambar: "assets/images/sarung tangan.jpg.jpeg",
+    },
+  };
+
+  const kunci = nama.toLowerCase();
+  const metadata = dataProduk[kunci] || {};
+
+  return {
+    ...item,
+    nama,
+    harga: Number(item?.harga || 0),
+    kategori: item?.kategori || metadata.kategori || "Perlengkapan",
+    detail: item?.detail || metadata.detail || "Produk pilihan yang siap dipakai saat latihan atau matchday.",
+    diskon: Number(item?.diskon ?? metadata.diskon ?? 0),
+    size: item?.size || metadata.size || "Ukuran lengkap",
+    stok: item?.stok || metadata.stok || "Stok ready",
+    gambar: item?.gambar || metadata.gambar || pilihGambarProduk(nama),
+  };
 }
 
 function tampilkanProduk(data) {
   const daftarProduk = Array.isArray(data) ? data : data?.data || [];
-  const sudahAdaBolaAdidas = daftarProduk.some((item) => String(item.nama || "").toLowerCase() === "bola adidas");
+  const daftarNormal = daftarProduk.map(normalisasiProduk);
+  const sudahAdaBolaAdidas = daftarNormal.some((item) => String(item.nama || "").toLowerCase() === "bola adidas");
   const daftarFinal = sudahAdaBolaAdidas
-    ? daftarProduk
-    : [...daftarProduk, {
+    ? daftarNormal
+    : [...daftarNormal, {
         nama: "Bola Adidas",
         harga: 350000,
         kategori: "Bola",
-        detail: "Bola resmi dengan desain premium dan grip presisi untuk latihan maupun pertandingan.",
+        detail: "Bola resmi berkualitas tinggi dengan grip stabil dan desain premium untuk latihan maupun matchday.",
         diskon: 12,
         size: "Size 5",
         stok: "Stok ready",
@@ -302,8 +464,18 @@ function lakukanCheckout() {
   renderKeranjang();
 }
 
-tombolHamburger.addEventListener("click", () => {
-  menuMobile.classList.toggle("hidden");
+if (tombolHamburger && menuMobile) {
+  tombolHamburger.addEventListener("click", () => {
+    menuMobile.classList.toggle("hidden");
+  });
+}
+
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener("click", () => {
+    if (menuMobile && !menuMobile.classList.contains("hidden")) {
+      menuMobile.classList.add("hidden");
+    }
+  });
 });
 
 formProduk.addEventListener("submit", async (event) => {
@@ -311,6 +483,8 @@ formProduk.addEventListener("submit", async (event) => {
 
   const nama = document.querySelector("#input-nama").value.trim();
   const harga = Number(document.querySelector("#input-harga").value);
+  const gambarUrl = document.querySelector("#input-gambar-url").value.trim();
+  const detail = document.querySelector("#input-detail").value.trim();
 
   if (nama === "" || harga <= 0) {
     pesanError.textContent = "Nama produk dan harga (lebih dari 0) wajib diisi.";
@@ -321,10 +495,12 @@ formProduk.addEventListener("submit", async (event) => {
   pesanError.classList.add("hidden");
 
   try {
+    const gambarFinal = gambarUrl || null;
+
     await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nama, harga }),
+      body: JSON.stringify({ nama, harga, gambar: gambarFinal, detail: detail || null }),
     });
   } catch (error) {
     console.error(error);
