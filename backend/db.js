@@ -1,7 +1,7 @@
 const Database = require("better-sqlite3");
 
 // Membuat/membuka file database bernama tokoadopt.db
-const db = new Database("tokoadopt.db");
+const db = new Database("P4Sport.db");
 
 //Membuat tabel 'produk' jika belum ada (dijalankan sekali saat server start)
 db.exec(`
@@ -21,14 +21,11 @@ module.exports = db;
             );
 
             // Data awal, mirip dengan harga yang dipakai di Hari 3
-            tambahProduk.run("Abdul", 90000);
-            tambahProduk.run("Asep",  100000);
-            tambahProduk.run("Ironi", 140000);
-            tambahProduk.run("Paul", 90000);
-            tambahProduk.run("Rizki", 130000);
-            tambahProduk.run("Rusdi", 110000);
-            tambahProduk.run("Saiful",145000);
-            tambahProduk.run("Ucup", 90000);
+            tambahProduk.run("Nike Mercurial CR7", 7777777);
+            tambahProduk.run("Kaos Kaki",  200000);
+            tambahProduk.run("Deker", 150000);
+            tambahProduk.run("Sarung Tangan Kiper", 350000);
+            tambahProduk.run("Baju Bekas Ronaldo", 7777777);
         
             console.log("Data awal produk berhasil dimasukkan ke database.");
         }

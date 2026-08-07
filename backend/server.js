@@ -13,7 +13,7 @@ app.use(express.json());
 
 // Route paling dasar, hanya untuk mengecek server hidup
 app.get("/", (req, res) => {
-  res.send("Selamat datang di API TokoAdopt!");
+  res.send("Selamat datang di API P4Sport!");
 });
 
 // Menjalankan server dan mendengarkan di PORT yang ditentukan
