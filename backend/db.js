@@ -23,6 +23,7 @@ module.exports = db;
             // Data awal, mirip dengan harga yang dipakai di Hari 3
             tambahProduk.run("Nike Mercurial CR7", 7777777);
             tambahProduk.run("Kaos Kaki",  200000);
+            tambahProduk.run("Bola Adidas", 350000);
             tambahProduk.run("Deker", 150000);
             tambahProduk.run("Sarung Tangan Kiper", 350000);
             tambahProduk.run("Baju Bekas Ronaldo", 7777777);

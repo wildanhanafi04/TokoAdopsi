@@ -1,4 +1,4 @@
-const API_URL = "https://cautious-tribble-7vg6xx567w4g2ppg7-3000.app.github.dev/api/products";
+const API_URL = "https://didactic-carnival-jjxvgg7vr7gqfpjwq-3000.app.github.dev/api/products";
 
 const produkDefault = [
   {
@@ -20,6 +20,16 @@ const produkDefault = [
     size: "S-M-L",
     stok: "Stok ready",
     gambar: "assets/images/kaos kaki adidas.jpg.jpeg",
+  },
+  {
+    nama: "Bola Adidas",
+    harga: 350000,
+    kategori: "Bola",
+    detail: "Bola resmi dengan desain premium dan grip presisi untuk latihan maupun pertandingan.",
+    diskon: 12,
+    size: "Size 5",
+    stok: "Stok ready",
+    gambar: "assets/images/Bola Adidas.webp",
   },
   {
     nama: "Deker Bola",
@@ -60,8 +70,12 @@ function pilihGambarProduk(nama) {
     return "assets/images/Sepatu cr7.jpg.jpeg";
   }
 
-  if (namaProduk.includes("kaos kaki") || namaProduk.includes("adidas")) {
+  if (namaProduk.includes("kaos kaki")) {
     return "assets/images/kaos kaki adidas.jpg.jpeg";
+  }
+
+  if (namaProduk.includes("bola adidas") || namaProduk === "bola adid" || namaProduk.includes("bola adid")) {
+    return "assets/images/Bola Adidas.webp";
   }
 
   if (namaProduk.includes("deker") || namaProduk.includes("bola")) {
@@ -119,11 +133,22 @@ function renderKeranjang() {
           <p class="font-semibold text-slate-800">${item.nama}</p>
           <p class="text-sm text-slate-500">Qty: ${item.qty}</p>
         </div>
-        <p class="text-sm font-bold text-blue-700">${formatRupiah(item.harga * item.qty)}</p>
+        <p class="text-sm font-bold text-[#ff3b30]">${formatRupiah(item.harga * item.qty)}</p>
       </div>
     `)
     .join("");
   totalKeranjang.textContent = formatRupiah(totalHarga);
+
+  isiKeranjang.insertAdjacentHTML(
+    "beforeend",
+    `
+      <div class="mt-4 border-t border-slate-200 pt-4">
+        <button id="btn-checkout" class="w-full rounded-xl bg-[#7CFF5B] px-3 py-2 text-sm font-semibold text-[#0f172a] transition hover:bg-[#6ee84f]">
+          Checkout
+        </button>
+      </div>
+    `
+  );
 }
 
 function tambahKeKeranjang(nama, harga, gambar) {
@@ -149,6 +174,7 @@ function buatKartuProduk(item) {
   const diskon = Number(item.diskon || 0);
   const badge = diskon > 0 ? `Diskon ${diskon}%` : "Best Seller";
   const gambar = item.gambar || pilihGambarProduk(item.nama);
+  const gambarFinal = gambar || pilihGambarProduk(item.nama);
   const detail = item.detail || "Produk pilihan yang siap dipakai saat latihan atau matchday.";
   const kategori = item.kategori || "Perlengkapan";
   const size = item.size || "Ukuran lengkap";
@@ -156,8 +182,8 @@ function buatKartuProduk(item) {
 
   kartu.innerHTML = `
     <div class="relative overflow-hidden rounded-2xl">
-      <img src="${gambar}" alt="${item.nama}" class="h-44 w-full object-cover" />
-      <span class="absolute left-3 top-3 rounded-full bg-amber-400 px-3 py-1 text-xs font-bold text-slate-900">${badge}</span>
+      <img src="${gambarFinal}" alt="${item.nama}" class="h-44 w-full object-cover" />
+      <span class="absolute left-3 top-3 rounded-full bg-[#ff3b30] px-3 py-1 text-xs font-bold text-white">${badge}</span>
     </div>
 
     <div class="mt-4">
@@ -175,11 +201,11 @@ function buatKartuProduk(item) {
       </div>
 
       <div class="mt-3 flex items-center justify-between">
-        <p class="text-lg font-black text-blue-700">Rp ${harga.toLocaleString("id-ID")}</p>
+        <p class="text-lg font-black text-[#ff3b30]">Rp ${harga.toLocaleString("id-ID")}</p>
         <span class="text-xs font-semibold text-slate-500">${size}</span>
       </div>
 
-      <button class="btn-tambah-keranjang mt-4 w-full rounded-xl bg-blue-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-800">
+      <button class="btn-tambah-keranjang mt-4 w-full rounded-xl bg-[#7CFF5B] px-3 py-2 text-sm font-semibold text-[#0f172a] transition hover:bg-[#6ee84f]">
         Tambah ke Keranjang
       </button>
     </div>
@@ -190,14 +216,28 @@ function buatKartuProduk(item) {
 
 function tampilkanProduk(data) {
   const daftarProduk = Array.isArray(data) ? data : data?.data || [];
+  const sudahAdaBolaAdidas = daftarProduk.some((item) => String(item.nama || "").toLowerCase() === "bola adidas");
+  const daftarFinal = sudahAdaBolaAdidas
+    ? daftarProduk
+    : [...daftarProduk, {
+        nama: "Bola Adidas",
+        harga: 350000,
+        kategori: "Bola",
+        detail: "Bola resmi dengan desain premium dan grip presisi untuk latihan maupun pertandingan.",
+        diskon: 12,
+        size: "Size 5",
+        stok: "Stok ready",
+        gambar: "assets/images/Bola Adidas.webp",
+      }];
+
   gridKatalog.innerHTML = "";
 
-  if (daftarProduk.length === 0) {
+  if (daftarFinal.length === 0) {
     gridKatalog.innerHTML = '<p class="text-sm text-slate-500">Belum ada produk yang tersedia.</p>';
     return;
   }
 
-  daftarProduk.forEach((item) => {
+  daftarFinal.forEach((item) => {
     gridKatalog.appendChild(buatKartuProduk(item));
   });
 }
@@ -249,6 +289,19 @@ if (tombolTutupKeranjang) {
   });
 }
 
+function lakukanCheckout() {
+  if (keranjang.length === 0) {
+    return;
+  }
+
+  const totalHarga = keranjang.reduce((jumlah, item) => jumlah + item.harga * item.qty, 0);
+  const totalItem = keranjang.reduce((jumlah, item) => jumlah + item.qty, 0);
+
+  alert(`Checkout berhasil!\nTotal ${totalItem} item\n${formatRupiah(totalHarga)}\nTerima kasih telah berbelanja di P4Sport.`);
+  keranjang = [];
+  renderKeranjang();
+}
+
 tombolHamburger.addEventListener("click", () => {
   menuMobile.classList.toggle("hidden");
 });
@@ -295,4 +348,10 @@ gridKatalog.addEventListener("click", (event) => {
 
   tambahKeKeranjang(namaProduk, hargaProduk, gambarProduk);
   panelKeranjang.classList.remove("hidden");
+});
+
+document.addEventListener("click", (event) => {
+  if (event.target.id === "btn-checkout") {
+    lakukanCheckout();
+  }
 });

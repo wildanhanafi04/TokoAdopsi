@@ -15,7 +15,7 @@
 <body class="min-h-screen bg-slate-950 text-slate-900">
     <style>
         body {
-            background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 45%, #fff4d6 100%);
+            background: linear-gradient(135deg, #f4f7ff 0%, #dfe9ff 45%, #f6f4ff 100%);
         }
 
         .football-card {
@@ -24,32 +24,32 @@
         }
     </style>
 
-    <header class="sticky top-0 z-20 border-b border-slate-200/70 bg-white/90 backdrop-blur">
+    <header class="sticky top-0 z-20 border-b border-slate-200/70 bg-[#0f172a]/95 backdrop-blur">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-            <h1 class="text-xl font-black text-blue-700">
+            <h1 class="text-xl font-black text-[#7CFF5B]">
                 P4Sport
             </h1>
 
-            <nav class="hidden gap-6 text-sm font-medium text-slate-600 md:flex">
-                <a href="#hero" class="transition hover:text-blue-700">Beranda</a>
-                <a href="#catalog" class="transition hover:text-blue-700">Katalog</a>
-                <a href="#about" class="transition hover:text-blue-700">Tentang Kami</a>
+            <nav class="hidden gap-6 text-sm font-medium text-slate-200 md:flex">
+                <a href="#hero" class="transition hover:text-[#7CFF5B]">Beranda</a>
+                <a href="#catalog" class="transition hover:text-[#7CFF5B]">Katalog</a>
+                <a href="#about" class="transition hover:text-[#7CFF5B]">Tentang Kami</a>
             </nav>
 
             <div class="flex items-center gap-3">
-                <button id="tombol-keranjang" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm">
+                <button id="tombol-keranjang" class="rounded-full bg-[#7CFF5B] px-4 py-2 text-sm font-semibold text-[#0f172a] shadow-sm">
                     Keranjang (0)
                 </button>
 
-                <div id="menu-mobile" class="absolute left-0 top-full mt-2 hidden w-full rounded-b-2xl bg-white p-4 shadow-lg md:hidden">
-                    <ul class="flex flex-col gap-2 text-sm font-medium text-slate-600">
-                        <a href="#hero" class="hover:text-blue-700">Beranda</a>
-                        <a href="#catalog" class="hover:text-blue-700">Katalog</a>
-                        <a href="#about" class="hover:text-blue-700">Tentang Kami</a>
+                <div id="menu-mobile" class="absolute left-0 top-full mt-2 hidden w-full rounded-b-[24px] border border-slate-200 bg-[#0f172a] p-4 shadow-2xl md:hidden">
+                    <ul class="flex flex-col gap-2 text-sm font-semibold text-slate-200">
+                        <a href="#hero" class="rounded-xl px-3 py-2 transition hover:bg-[#7CFF5B]/15 hover:text-[#7CFF5B]">Beranda</a>
+                        <a href="#catalog" class="rounded-xl px-3 py-2 transition hover:bg-[#7CFF5B]/15 hover:text-[#7CFF5B]">Katalog</a>
+                        <a href="#about" class="rounded-xl px-3 py-2 transition hover:bg-[#7CFF5B]/15 hover:text-[#7CFF5B]">Tentang Kami</a>
                     </ul>
                 </div>
 
-                <button id="tombol-hamburger" class="flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-2xl text-blue-700 shadow-sm transition hover:bg-blue-100 md:hidden">&#9776;</button>
+                <button id="tombol-hamburger" class="flex h-10 w-10 items-center justify-center rounded-full border border-[#7CFF5B]/40 bg-[#7CFF5B]/10 text-2xl text-[#7CFF5B] shadow-sm transition hover:bg-[#7CFF5B]/20 md:hidden">&#9776;</button>
             </div>
         </div>
     </header>
@@ -75,24 +75,24 @@
 
     <main>
         <section id="hero" class="px-4 py-6 md:py-8">
-            <div class="mx-auto max-w-7xl overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-950 via-blue-900 to-emerald-700 text-white shadow-2xl">
+            <div class="mx-auto max-w-7xl overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#1d4ed8] text-white shadow-2xl">
                 <div class="grid lg:grid-cols-[1.2fr_0.8fr]">
                     <div class="p-8 md:p-12">
-                        <span class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-medium text-blue-100">
+                        <span class="inline-flex rounded-full border border-[#7CFF5B]/30 bg-[#7CFF5B]/15 px-3 py-1 text-sm font-medium text-[#dfffd7]">
                             ⚽ Koleksi untuk pecinta bola
                         </span>
                         <h2 class="mt-4 text-3xl font-black leading-tight md:text-5xl">
                             Perlengkapan sepak bola modern untuk tampil percaya diri.
                         </h2>
-                        <p class="mt-4 max-w-2xl text-base text-blue-100 md:text-lg">
+                        <p class="mt-4 max-w-2xl text-base text-slate-200 md:text-lg">
                             Dari sepatu cepat, sarung tangan, hingga jersey favorit, semua tersedia di P4Sport dengan kualitas yang siap dipakai saat matchday.
                         </p>
 
                         <div class="mt-6 flex flex-wrap gap-3">
-                            <a href="#catalog" class="rounded-full bg-white px-5 py-3 font-semibold text-blue-700 transition hover:bg-blue-50">
+                            <a href="#catalog" class="rounded-full bg-[#7CFF5B] px-5 py-3 font-semibold text-[#0f172a] transition hover:bg-[#6ee84f]">
                                 Lihat katalog
                             </a>
-                            <a href="#about" class="rounded-full border border-white/30 px-5 py-3 font-semibold text-white transition hover:bg-white/10">
+                            <a href="#about" class="rounded-full border border-[#ff3b30]/50 px-5 py-3 font-semibold text-white transition hover:bg-[#ff3b30]/15">
                                 Kenapa pilih kami
                             </a>
                         </div>
@@ -100,22 +100,22 @@
                         <div class="mt-8 grid gap-3 sm:grid-cols-3">
                             <div class="rounded-2xl border border-white/20 bg-white/10 p-3">
                                 <p class="text-2xl font-bold">24/7</p>
-                                <p class="text-sm text-blue-100">Layanan pelanggan</p>
+                                <p class="text-sm text-slate-200">Layanan pelanggan</p>
                             </div>
                             <div class="rounded-2xl border border-white/20 bg-white/10 p-3">
                                 <p class="text-2xl font-bold">4.9</p>
-                                <p class="text-sm text-blue-100">Rating penggemar</p>
+                                <p class="text-sm text-slate-200">Rating penggemar</p>
                             </div>
                             <div class="rounded-2xl border border-white/20 bg-white/10 p-3">
                                 <p class="text-2xl font-bold">90%</p>
-                                <p class="text-sm text-blue-100">Promo spesial</p>
+                                <p class="text-sm text-slate-200">Promo spesial</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.22),_transparent_45%)] p-8 md:p-12">
                         <div class="rounded-[28px] border border-white/20 bg-white/10 p-6 backdrop-blur">
-                            <p class="text-sm uppercase tracking-[0.3em] text-blue-100">Spesial minggu ini</p>
+                            <p class="text-sm uppercase tracking-[0.3em] text-[#7CFF5B]">Spesial minggu ini</p>
                             <h3 class="mt-3 text-2xl font-bold">Diskon besar untuk gear favoritmu</h3>
                             <ul class="mt-4 space-y-2 text-sm text-blue-50">
                                 <li>• Sepatu sprint ringan dan responsif</li>
@@ -132,37 +132,37 @@
             <div class="mx-auto max-w-7xl px-4 py-10">
                 <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>
-                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-700">Produk unggulan</p>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-[#ff3b30]">Produk unggulan</p>
                         <h3 class="mt-2 text-2xl font-black text-slate-800">Pilihan terbaik buat matchday dan latihan</h3>
                         <p class="mt-2 max-w-2xl text-sm text-slate-600">Setiap produk hadir dengan detail yang membantu kamu memilih perlengkapan yang paling cocok untuk performa dan gaya.</p>
                     </div>
-                    <div class="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-medium text-white">
+                    <div class="rounded-2xl bg-[#0f172a] px-4 py-3 text-sm font-medium text-[#7CFF5B]">
                         ⭐ 4.9 dari 1.200+ penggemar
                     </div>
                 </div>
 
                 <div id="grid-katalog" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
 
-                <form id="form-produk" class="mx-auto mt-8 max-w-2xl overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-900 via-blue-900 to-emerald-700 p-6 text-white shadow-xl">
+                <form id="form-produk" class="mx-auto mt-8 max-w-2xl overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#1d4ed8] p-6 text-white shadow-xl">
                     <div class="mb-5">
-                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-100">Tambah item baru</p>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-[#7CFF5B]">Tambah item baru</p>
                         <h4 class="mt-2 text-xl font-black">Tambahkan produk favoritmu ke katalog</h4>
-                        <p class="mt-2 text-sm text-blue-100">Isi data produk dengan cepat dan tampilkan di halaman toko.</p>
+                        <p class="mt-2 text-sm text-slate-200">Isi data produk dengan cepat dan tampilkan di halaman toko.</p>
                     </div>
 
                     <div class="mt-4 grid gap-4 md:grid-cols-2">
                         <div>
-                            <label class="mb-1 block text-sm font-medium text-blue-100">Nama Produk</label>
-                            <input type="text" id="input-nama" required class="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-white outline-none placeholder:text-blue-100/80 focus:border-white/50" placeholder="Contoh: Bola Training" />
+                            <label class="mb-1 block text-sm font-medium text-slate-200">Nama Produk</label>
+                            <input type="text" id="input-nama" required class="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-white outline-none placeholder:text-slate-300/80 focus:border-[#7CFF5B]" placeholder="Contoh: Bola Training" />
                         </div>
                         <div>
-                            <label class="mb-1 block text-sm font-medium text-blue-100">Harga (Rp)</label>
-                            <input type="number" id="input-harga" required min="0" class="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-white outline-none placeholder:text-blue-100/80 focus:border-white/50" placeholder="150000" />
+                            <label class="mb-1 block text-sm font-medium text-slate-200">Harga (Rp)</label>
+                            <input type="number" id="input-harga" required min="0" class="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-white outline-none placeholder:text-slate-300/80 focus:border-[#7CFF5B]" placeholder="150000" />
                         </div>
                     </div>
                     <p id="pesan-error" class="mt-3 hidden text-sm text-amber-300"></p>
 
-                    <button type="submit" class="mt-5 w-full rounded-xl bg-white px-4 py-3 font-semibold text-blue-700 transition hover:bg-blue-50">
+                    <button type="submit" class="mt-5 w-full rounded-xl bg-[#7CFF5B] px-4 py-3 font-semibold text-[#0f172a] transition hover:bg-[#6ee84f]">
                         Tambahkan Produk
                     </button>
                 </form>
